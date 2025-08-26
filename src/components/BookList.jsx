@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { BookContext } from '../context/BookContext';
 import BookItem from './BookItem';
 
