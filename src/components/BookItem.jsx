@@ -1,5 +1,4 @@
-
-function BookItem({ book }) {
+function BookItem({ book, onRemove }) {
     return (
         <div className="card">
             <img src={book.image} className="card-img-top" alt="обложка книги" />
@@ -8,6 +7,7 @@ function BookItem({ book }) {
                 <h6 className="card-subtitle mb-2 text-muted">{book.author}</h6>
                 <p className="card-text"><strong>Жанр:</strong> {book.genre}</p>
                 <p className="card-text"><strong>Описание:</strong> {book.description}</p>
+                <button className="btn btn-danger" onClick={onRemove}>Удалить книгу</button>
             </div>
         </div>
     );

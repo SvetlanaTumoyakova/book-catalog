@@ -1,14 +1,18 @@
+import React, { useContext } from 'react';
+import { BookContext } from '../context/BookContext';
 import BookItem from './BookItem';
 
-function BookList({ books }) {
+function BookList() {
+    const { books, removeBook } = useContext(BookContext);
+
     return (
         <div className="container">
-            <h2 className="mb-4">Список книг</h2>
+            <h2 className="mb-4">Список любимых книг</h2>
             <div className="row">
                 {books.length > 0 ? (
                     books.map((book, index) => (
                         <div className="col-md-4 mb-3" key={index}>
-                            <BookItem book={book} />
+                            <BookItem book={book} onRemove={() => removeBook(index)} />
                         </div>
                     ))
                 ) : (
