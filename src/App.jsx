@@ -11,7 +11,6 @@ function App() {
                 <Routes>
                     <Route path="/" element={<BookForm />} />
                     <Route path="/books" element={<BookList />} />
-                    <Route path="/book/:id" element={<BookItem />} />
                 </Routes>
             </div>
         </Router>
