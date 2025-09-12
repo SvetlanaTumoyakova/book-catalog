@@ -1,14 +1,23 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { BookContext } from '../context/BookContext';
 
-function BookForm() {
-    const { addBook } = useContext(BookContext);
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [genre, setGenre] = useState('');
-    const [description, setDescription] = useState('');
-    const [image, setImage] = useState('');
+function BookEdit({ book, onSave }) {
+    const { updateBook } = useContext(BookContext);
+    const [title, setTitle] = useState(book.title);
+    const [author, setAuthor] = useState(book.author);
+    const [genre, setGenre] = useState(book.genre);
+    const [description, setDescription] = useState(book.description);
+    const [image, setImage] = useState(book.image);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setTitle(book.title);
+        setAuthor(book.author);
+        setGenre(book.genre);
+        setDescription(book.description);
+        setImage(book.image);
+    }, [book]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -46,13 +55,9 @@ function BookForm() {
             return;
         }
 
-        const newBook = { title, author, genre, description, image };
-        addBook(newBook);
-        setTitle('');
-        setAuthor('');
-        setGenre('');
-        setDescription('');
-        setImage('');
+        const updatedBook = { ...book, title, author, genre, description, image };
+        updateBook(updatedBook);
+        onSave();
     };
 
     return (
@@ -71,11 +76,11 @@ function BookForm() {
                 <textarea className="form-control" placeholder="Описание" value={description} onChange={(e) => setDescription(e.target.value)} required />
             </div>
             <div className="mb-3">
-                <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} required />
+                <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} />
             </div>
-            <button type="submit" className="btn btn-primary">Добавить книгу</button>
+            <button type="submit" className="btn btn-primary">Сохранить изменения</button>
         </form>
     );
 }
 
-export default BookForm;
+export default BookEdit;

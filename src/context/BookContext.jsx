@@ -13,11 +13,25 @@ export const BookProvider = ({ children }) => {
     }, [books]);
 
     const addBook = (newBook) => {
-        setBooks((prevBooks) => [...prevBooks, newBook]);
+        setBooks((prevBooks) => [
+            ...prevBooks,
+            {
+                id: `${Date.now()}`,
+                ...newBook,
+            },
+        ]);
     };
 
-    const removeBook = (index) => {
-        setBooks((prevBooks) => prevBooks.filter((_, i) => i !== index));
+    const editBook = (id, updatedBook) => {
+        setBooks((prevBooks) =>
+            prevBooks.map((book) =>
+                book.id === id ? { ...book, ...updatedBook } : book
+            )
+        );
+    };
+
+    const removeBook = (id) => {
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
     };
 
     return (
@@ -26,3 +40,5 @@ export const BookProvider = ({ children }) => {
         </BookContext.Provider>
     );
 };
+
+export default BookProvider;
