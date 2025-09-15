@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -6,22 +6,27 @@ function Register() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
-
     const { register } = useContext(AuthContext);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (username.trim() && email.trim() && password.trim()) {
-            register({ username, email, password });
-            setUsername("");
-            setEmail("");
-            setPassword("");
-            navigate("/login");
+            try {
+                await register({ username, email, password });
+                navigate("/login");
+            } catch (error) {
+                setError(error.message || "Ошибка регистрации. Пожалуйста, попробуйте позже.");
+            }
+        } else {
+            setError("Все поля обязательны для заполнения."); 
         }
     };
-     return (
+
+    return (
         <form onSubmit={handleSubmit}>
+            {error && <div className="alert alert-danger">{error}</div>}
             <div className="form-group my-3">
                 <input
                     type="text"

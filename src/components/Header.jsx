@@ -40,11 +40,6 @@ function Header() {
                                         Список книг
                                     </NavLink>
                                 </li>
-                                <li className="nav-item">
-                                    <NavLink className="nav-link" to="/create">
-                                        Добавить книгу
-                                    </NavLink>
-                                </li>
                                 <li className="nav-item ms-auto dropdown">
                                     <button
                                         className="btn btn-dark dropdown-toggle"

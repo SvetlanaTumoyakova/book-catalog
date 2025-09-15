@@ -15,55 +15,65 @@ function AuthProvider({ children }) {
     });
     
     const navigate = useNavigate();
+    const apiUrl = "http://localhost:5174";
 
     useEffect(() => {
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }, [currentUser]);
     
     useEffect(() => {
-            localStorage.setItem("status", JSON.stringify(isAuthenticated));
-        }, [isAuthenticated]);
+        localStorage.setItem("status", JSON.stringify(isAuthenticated));
+    }, [isAuthenticated]);
     
-            const register = async ({ username, email, password }) => {
-        await fetch("http://localhost:5173/register", {
+    const register = async ({ username, email, password }) => {
+        const response = await fetch(`${apiUrl}/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username, email, password }),
         });
-    };
 
-    const login = async ({ username, email, password }) => {
-        const response = await fetch("http://localhost:5173/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, email, password }),
-        });
-        if (response.ok) {
-            const data = await response.json();
-            setCurrentUser(data.user);
-            setIsAuthenticated(true);
-            localStorage.setItem("token", data.token);
-            navigate("/");
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Ошибка регистрации");
         }
     };
 
-     const logout = () => {
+    const login = async ({ username, email, password }) => {
+        const response = await fetch(`${apiUrl}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, email, password }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Ошибка входа");
+        }
+
+        const data = await response.json();
+        setCurrentUser(data.user);
+        setIsAuthenticated(true);
+        localStorage.setItem("token", data.token);
+        navigate("/");
+    };
+
+    const logout = () => {
         setCurrentUser(null);
         setIsAuthenticated(false);
         localStorage.removeItem("token");
     };
 
-     return (
-            <AuthContext.Provider
-                value={{ currentUser, isAuthenticated, register, login, logout }}
-            >
-                {children}
-            </AuthContext.Provider>
-        );
+    return (
+        <AuthContext.Provider
+            value={{ currentUser, isAuthenticated, register, login, logout }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export { AuthContext, AuthProvider };
