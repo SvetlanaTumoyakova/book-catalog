@@ -24,7 +24,7 @@ function AuthProvider({ children }) {
     useEffect(() => {
         localStorage.setItem("status", JSON.stringify(isAuthenticated));
     }, [isAuthenticated]);
-    
+
     const register = async ({ username, email, password }) => {
         const response = await fetch(`${apiUrl}/register`, {
             method: "POST",
@@ -38,6 +38,25 @@ function AuthProvider({ children }) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Ошибка регистрации");
         }
+
+        const loginResponse = await fetch(`${apiUrl}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, email, password }),
+        });
+
+        if (!loginResponse.ok) {
+            const errorData = await loginResponse.json();
+            throw new Error(errorData.message || "Ошибка входа после регистрации");
+        }
+
+        const data = await loginResponse.json();
+        setCurrentUser(data.user);
+        setIsAuthenticated(true);
+        localStorage.setItem("token", data.token);
+        navigate("/book");
     };
 
     const login = async ({ username, email, password }) => {
@@ -58,7 +77,7 @@ function AuthProvider({ children }) {
         setCurrentUser(data.user);
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
-        navigate("/");
+        navigate("/book");
     };
 
     const logout = () => {

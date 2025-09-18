@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function BookItem({ book }) {
+    useEffect(() => {
+        console.log(book.image); 
+    }, [book.image]);
+
     return (
         <div className="card">
             <img src={book.image} className="card-img-top" alt="обложка книги" />
