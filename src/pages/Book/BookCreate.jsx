@@ -4,80 +4,86 @@ import { useNavigate } from 'react-router-dom';
 
 function BookCreate() {
     const { addBook } = useContext(BookContext);
-    const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
-    const [genre, setGenre] = useState('');
-    const [description, setDescription] = useState('');
-    const [image, setImage] = useState('');
-    const [error, setError] = useState('');
+    const [book, setBook] = useState({
+        title: "",
+        author: "",
+        genre: "",
+        description: ""
+    });
     const navigate = useNavigate(); 
+
+    const [error, setError] = useState('');
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setImage(reader.result);
-            };
             reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                setBook(({ ...book, image: reader.result }));
+            };
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        if (title.length < 3) {
+        if (book.title.length < 3) {
             setError("Название должно содержать минимум 3 символа.");
             return;
         }
-        if (author.length < 3) {
+        if (book.author.length < 3) {
             setError("Автор должен содержать минимум 3 символа.");
             return;
         }
-        if (genre.length < 3) {
+        if (book.genre.length < 3) {
             setError("Жанр должен содержать минимум 3 символа.");
             return;
         }
-        if (description.length < 10) {
+        if (book.description.length < 10) {
             setError("Описание должно содержать минимум 10 символов.");
             return;
         }
-        if (!image) {
+        if (!book.image) {
             setError("Пожалуйста, загрузите изображение.");
             return;
         }
 
-        const newBook = { title, author, genre, description, image };
-        addBook(newBook);
-        setTitle('');
-        setAuthor('');
-        setGenre('');
-        setDescription('');
-        setImage('');
-
-        navigate('/books');
+        try {
+            await addBook(book);
+            setBook({
+                title: "",
+                author: "",
+                genre: "",
+                description: ""
+            });
+            navigate(`/books`);
+        } catch (error) {
+            console.log(error);
+            setError("Ошибка при добавлении книги. Пожалуйста, попробуйте еще раз.");
+        }
     };
 
     return (
         <form onSubmit={handleSubmit} className="mb-4">
             {error && <div className="alert alert-danger">{error}</div>}
             <div className="mb-3">
-                <input type="text" className="form-control" placeholder="Название" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                <input type="text" className="form-control" placeholder="Название" value={book.title} onChange={(e) => setBook({ ...book, title: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <input type="text" className="form-control" placeholder="Автор" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+                <input type="text" className="form-control" placeholder="Автор" value={book.author} onChange={(e) => setBook({...book, author: e.target.value})} required />
             </div>
             <div className="mb-3">
-                <input type="text" className="form-control" placeholder="Жанр" value={genre} onChange={(e) => setGenre(e.target.value)} required />
+                <input type="text" className="form-control" placeholder="Жанр" value={book.genre} onChange={(e) => setBook({...book, genre: e.target.value})} required />
             </div>
             <div className="mb-3">
-                <textarea className="form-control" placeholder="Описание" value={description} onChange={(e) => setDescription(e.target.value)} required />
+                <textarea className="form-control" placeholder="Описание" value={book.description} onChange={(e) => setBook({...book, description: e.target.value})} required />
             </div>
             <div className="mb-3">
-                <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} required />
+                <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} />
             </div>
-            <button type="submit" className="btn btn-primary">Добавить книгу</button>
+            <button type="submit" className="btn btn-primary">Сохранить изменения</button>
         </form>
     );
 }

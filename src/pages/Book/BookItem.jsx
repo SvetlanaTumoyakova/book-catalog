@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 function BookItem({ book }) {
     useEffect(() => {
-        console.log(book.image); 
     }, [book.image]);
 
     return (
