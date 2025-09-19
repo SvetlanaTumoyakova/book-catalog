@@ -2,13 +2,17 @@ import { useContext } from 'react';
 import { BookContext } from '../../context/BookContext';
 import BookItem from './BookItem';
 import { Link } from 'react-router-dom';
+import { AuthContext } from "../../context/AuthContext";
 
 function BookList() {
     const { books } = useContext(BookContext);
-    console.log(books);
+    const { currentUser } = useContext(AuthContext);
+    const isAdmin = currentUser && currentUser.role === 'admin';
     return (
         <div className="container">
-            <Link to="/create" className="btn btn-primary mb-3">Добавить новую книгу</Link>
+               {isAdmin && (
+                <Link to="/create" className="btn btn-primary mb-3">Добавить новую книгу</Link>
+            )}
             <div className="row">
                 {books.length > 0 ? (
                     books.map((book) => (

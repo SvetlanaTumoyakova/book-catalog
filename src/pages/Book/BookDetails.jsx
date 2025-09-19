@@ -1,10 +1,13 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import { BookContext } from '../../context/BookContext';
+import { AuthContext } from "../../context/AuthContext";
 
 function BookDetails() {
     const { id } = useParams();
     const { fetchBookDetails, removeBook, error } = useContext(BookContext);
+    const { currentUser } = useContext(AuthContext);
+    const isAdmin = currentUser && currentUser.role === 'admin';
     const [book, setBook] = useState(null);
     const navigate = useNavigate();
 
@@ -48,8 +51,12 @@ function BookDetails() {
                 <img src={book.image} alt="обложка книги" />
                 <div className="mt-3">
                     <Link to="/books" className="btn btn-secondary me-2">Назад к списку книг</Link>
-                    <Link to={`/edit/${book.id}`} className="btn btn-warning me-2">Редактировать</Link>
-                    <button className="btn btn-danger" onClick={handleDelete}>Удалить</button>
+                     {isAdmin && (
+                        <>
+                            <Link to={`/edit/${book.id}`} className="btn btn-warning me-2">Редактировать</Link>
+                            <button className="btn btn-danger" onClick={handleDelete}>Удалить</button>
+                        </>
+                    )}
                 </div>
             </>
         ) : (

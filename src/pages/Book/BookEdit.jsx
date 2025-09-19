@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { BookContext } from '../../context/BookContext';
-import { AuthContext } from '../../context/AuthContext';
 
 function BookEdit() {
     const { id } = useParams();

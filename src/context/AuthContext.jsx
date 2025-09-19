@@ -75,6 +75,7 @@ function AuthProvider({ children }) {
 
         const data = await response.json();
         setCurrentUser(data.user);
+        console.log("data.user:", data.user);
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
         navigate("/book");
