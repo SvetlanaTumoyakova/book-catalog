@@ -5,6 +5,7 @@ export const BookContext = createContext();
 export const BookProvider = ({ children }) => {
     const [books, setBooks] = useState([]);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const apiUrl = "http://localhost:5174";
 
@@ -20,6 +21,7 @@ export const BookProvider = ({ children }) => {
                 });
                 const data = await response.json();
                 setBooks(data);
+                setLoading(false);
             } catch (error) {
                 setError("Error fetching books: " + error.message);
             }
@@ -29,6 +31,7 @@ export const BookProvider = ({ children }) => {
     }, []);
 
     const fetchBookDetails = async (id) => {
+        setLoading(true);
         try {
             const response = await fetch(`${apiUrl}/books/${id}`, {
                 method: 'GET',
@@ -46,6 +49,8 @@ export const BookProvider = ({ children }) => {
         } catch (error) {
             setError(error.message);
             throw error;
+        } finally{
+            setLoading(false);
         }
     };
 
@@ -71,7 +76,7 @@ export const BookProvider = ({ children }) => {
         } catch (error) {
             setError(error.message);
             throw error;
-        }
+        } 
     };
 
     const addBook = async (createBook) => {
@@ -123,7 +128,7 @@ export const BookProvider = ({ children }) => {
         } catch (error) {
             setError(error.message);
             throw error;
-        }
+        } 
     };
 
     return (
