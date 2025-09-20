@@ -8,6 +8,7 @@ function BookList() {
     const { books, loading } = useContext(BookContext);
     const { currentUser } = useContext(AuthContext);
     const isAdmin = currentUser && currentUser.role === 'admin';
+
     return (
         <div className="container">
                {isAdmin && (

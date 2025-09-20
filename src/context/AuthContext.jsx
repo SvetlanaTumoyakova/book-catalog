@@ -13,6 +13,11 @@ function AuthProvider({ children }) {
         const savedStatus = localStorage.getItem("status");
         return savedStatus ? JSON.parse(savedStatus) : false;
     });
+
+     const [isRegistered, setIsRegistered] = useState(() => {
+        const userRegistered = localStorage.getItem("userRegistered");
+        return userRegistered ? true : false;
+    });
     
     const navigate = useNavigate();
     const apiUrl = "http://localhost:5174";
@@ -55,7 +60,9 @@ function AuthProvider({ children }) {
         const data = await loginResponse.json();
         setCurrentUser(data.user);
         setIsAuthenticated(true);
+        setIsRegistered(true);
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userRegistered", true);
         navigate("/book");
     };
 

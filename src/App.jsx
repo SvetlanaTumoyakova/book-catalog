@@ -9,18 +9,9 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
-import { useState, useEffect } from "react";
+import { AuthContext } from "./context/AuthContext"; 
 
 function App() {
-    const [isRegistered, setIsRegistered] = useState(false);
-
-    useEffect(() => {
-        const userRegistered = localStorage.getItem("userRegistered");
-        if (userRegistered) {
-            setIsRegistered(true);
-        }
-    }, []);
-
     return (
         <Router>
             <AuthProvider>
@@ -62,13 +53,19 @@ function App() {
                             />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            <Route path="/" element={<Navigate to={isRegistered ? "/books" : "/register"} />} />
+                            <Route path="/"  element={<MainRedirect />} />
                         </Routes>
                     </BookProvider>
                 </div>
             </AuthProvider>
         </Router>
     );
+}
+
+function MainRedirect() {
+    const { isRegistered } = useContext(AuthContext);
+    console.log("isRegistered", isRegistered);
+    return <Navigate to={isRegistered ? "/books" : "/register"} />;
 }
 
 export default App;

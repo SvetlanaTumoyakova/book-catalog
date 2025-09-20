@@ -21,17 +21,19 @@ export const BookProvider = ({ children }) => {
                 });
                 const data = await response.json();
                 setBooks(data);
-                setLoading(false);
             } catch (error) {
                 setError("Error fetching books: " + error.message);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchBooks();
     }, []);
 
+
+
     const fetchBookDetails = async (id) => {
-        setLoading(true);
         try {
             const response = await fetch(`${apiUrl}/books/${id}`, {
                 method: 'GET',
