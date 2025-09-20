@@ -4,9 +4,9 @@ import { BookContext } from '../../context/BookContext';
 
 function BookEdit() {
     const { id } = useParams();
-    const { editBook, fetchBookDetails } = useContext(BookContext);
+    const { fetchBooks, editBook, fetchBookDetails } = useContext(BookContext);
     const [book, setBook] = useState(null);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const [error, setError] = useState('');
 
@@ -16,7 +16,7 @@ function BookEdit() {
             setBook(bookDetails);
         };
         getBookDetails();
-        
+
     }, [id]);
 
     const handleImageChange = (e) => {
@@ -58,6 +58,7 @@ function BookEdit() {
         try {
             await editBook(id, book);
             setBook(null);
+            fetchBooks();
             navigate(`/details/${id}`);
         } catch (error) {
             setError("Ошибка при добавлении книги. Пожалуйста, попробуйте еще раз.");
@@ -75,13 +76,13 @@ function BookEdit() {
                 <input type="text" className="form-control" placeholder="Название" value={book.title} onChange={(e) => setBook({ ...book, title: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <input type="text" className="form-control" placeholder="Автор" value={book.author} onChange={(e) => setBook({...book, author: e.target.value})} required />
+                <input type="text" className="form-control" placeholder="Автор" value={book.author} onChange={(e) => setBook({ ...book, author: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <input type="text" className="form-control" placeholder="Жанр" value={book.genre} onChange={(e) => setBook({...book, genre: e.target.value})} required />
+                <input type="text" className="form-control" placeholder="Жанр" value={book.genre} onChange={(e) => setBook({ ...book, genre: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <textarea className="form-control" placeholder="Описание" value={book.description} onChange={(e) => setBook({...book, description: e.target.value})} required />
+                <textarea className="form-control" placeholder="Описание" value={book.description} onChange={(e) => setBook({ ...book, description: e.target.value })} required />
             </div>
             <div className="mb-3">
                 <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} />

@@ -28,7 +28,7 @@ function BookDetails() {
         if (window.confirm("Вы уверены, что хотите удалить эту книгу?")) {
             try {
                 await removeBook(id);
-                navigate('/books');
+                navigate('/');
             } catch (error) {
                 console.error("Error deleting book:", error);
                 alert("Не удалось удалить книгу. Пожалуйста, попробуйте еще раз.");
@@ -50,7 +50,7 @@ function BookDetails() {
                 <p><strong>Описание:</strong> {book.description}</p>
                 <img src={book.image} alt="обложка книги" />
                 <div className="mt-3">
-                    <Link to="/books" className="btn btn-secondary me-2">Назад к списку книг</Link>
+                    <Link to="/" className="btn btn-secondary me-2">Назад к списку книг</Link>
                      {isAdmin && (
                         <>
                             <Link to={`/edit/${book.id}`} className="btn btn-warning me-2">Редактировать</Link>

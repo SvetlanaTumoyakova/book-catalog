@@ -63,7 +63,7 @@ function AuthProvider({ children }) {
         setIsRegistered(true);
         localStorage.setItem("token", data.token);
         localStorage.setItem("userRegistered", true);
-        navigate("/book");
+        navigate("/");
     };
 
     const login = async ({ username, email, password }) => {
@@ -85,7 +85,7 @@ function AuthProvider({ children }) {
         console.log("data.user:", data.user);
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
-        navigate("/book");
+        navigate("/");
     };
 
     const logout = () => {

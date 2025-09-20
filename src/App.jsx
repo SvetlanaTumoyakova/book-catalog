@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext"; 
+import { useContext } from "react";
+import { AuthProvider, AuthContext } from "./context/AuthContext"; 
 import { BookProvider } from "./context/BookContext"; 
 import BookCreate from "./pages/Book/BookCreate";
 import BookEdit from "./pages/Book/BookEdit";
@@ -9,8 +10,6 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
-import { AuthContext } from "./context/AuthContext"; 
-
 function App() {
     return (
         <Router>
@@ -36,7 +35,7 @@ function App() {
                                 }
                             />
                             <Route
-                                path="/books"
+                                path="/"
                                 element={
                                     <ProtectedRoute>
                                         <BookList />
@@ -53,19 +52,12 @@ function App() {
                             />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            <Route path="/"  element={<MainRedirect />} />
                         </Routes>
                     </BookProvider>
                 </div>
             </AuthProvider>
         </Router>
     );
-}
-
-function MainRedirect() {
-    const { isRegistered } = useContext(AuthContext);
-    console.log("isRegistered", isRegistered);
-    return <Navigate to={isRegistered ? "/books" : "/register"} />;
 }
 
 export default App;

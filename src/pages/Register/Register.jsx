@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 function Register() {
@@ -8,19 +8,27 @@ function Register() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { register } = useContext(AuthContext);
+    const { register, isAuthenticated } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            console.log("сработал isAuthenticated");
+            navigate("/");
+        }
+    }, [isAuthenticated]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (username.trim() && email.trim() && password.trim()) {
             try {
                 await register({ username, email, password });
-                navigate("/login");
+                navigate("/");
             } catch (error) {
                 setError(error.message || "Ошибка регистрации. Пожалуйста, попробуйте позже.");
             }
         } else {
-            setError("Все поля обязательны для заполнения."); 
+            setError("Все поля обязательны для заполнения.");
         }
     };
 
@@ -57,6 +65,7 @@ function Register() {
             <button type="submit" className="btn btn-outline-success mt-3">
                 Зарегистрироваться
             </button>
+            <Link to="/login" className="btn btn-secondary mt-3 ms-4">Уже есть аккаунт</Link>
         </form>
     );
 }

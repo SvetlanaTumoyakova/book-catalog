@@ -36,7 +36,7 @@ function Header() {
                         {isAuthenticated ? (
                             <>
                                 <li className="nav-item">
-                                    <NavLink className="nav-link" to="/books">
+                                    <NavLink className="nav-link" to="/">
                                         Список книг
                                     </NavLink>
                                 </li>

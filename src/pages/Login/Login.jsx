@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useContext, useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 function Login() {
@@ -7,19 +7,26 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const { login, isAuthenticated } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            console.log("сработал isAuthenticated");
+            navigate("/");
+        }
+    }, [isAuthenticated]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (username.trim() && password.trim()) {
             try {
                 await login({ username, password });
-                navigate("/books");
+                navigate("/");
             } catch (error) {
                 setError(error.message || "Ошибка входа. Пожалуйста, проверьте свои данные.");
             }
         } else {
-            setError("Все поля обязательны для заполнения."); 
+            setError("Все поля обязательны для заполнения.");
         }
     };
 
@@ -47,6 +54,7 @@ function Login() {
             <button type="submit" className="btn btn-outline-success mt-3">
                 Войти
             </button>
+            <Link to="/register" className="btn btn-secondary mt-3 ms-4">Зарегистрироваться</Link>
         </form>
     );
 }

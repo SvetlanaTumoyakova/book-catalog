@@ -58,7 +58,7 @@ function BookCreate() {
                 genre: "",
                 description: ""
             });
-            navigate(`/books`);
+            navigate(`/`);
         } catch (error) {
             console.log(error);
             setError("Ошибка при добавлении книги. Пожалуйста, попробуйте еще раз.");

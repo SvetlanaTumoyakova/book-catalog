@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { AuthContext } from "./AuthContext";
 
 export const BookContext = createContext();
 
@@ -6,32 +7,34 @@ export const BookProvider = ({ children }) => {
     const [books, setBooks] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
+    const { isAuthenticated } = useContext(AuthContext);
 
     const apiUrl = "http://localhost:5174";
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const response = await fetch(`${apiUrl}/books`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-                const data = await response.json();
-                setBooks(data);
-            } catch (error) {
-                setError("Error fetching books: " + error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (isAuthenticated) {
+            fetchBooks();
+        }
 
-        fetchBooks();
-    }, []);
+    }, [isAuthenticated]);
 
-
+    const fetchBooks = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/books`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const data = await response.json();
+            setBooks(data);
+        } catch (error) {
+            setError("Error fetching books: " + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchBookDetails = async (id) => {
         try {
@@ -51,7 +54,7 @@ export const BookProvider = ({ children }) => {
         } catch (error) {
             setError(error.message);
             throw error;
-        } finally{
+        } finally {
             setLoading(false);
         }
     };
@@ -74,11 +77,11 @@ export const BookProvider = ({ children }) => {
                 console.log(filtered, id)
                 return filtered;
             });
-            
+
         } catch (error) {
             setError(error.message);
             throw error;
-        } 
+        }
     };
 
     const addBook = async (createBook) => {
@@ -97,10 +100,10 @@ export const BookProvider = ({ children }) => {
             }
 
             const createData = await response.json();
-            setBooks((prevBooks) => 
+            setBooks((prevBooks) =>
                 [...prevBooks, createData]
             );
-            return createData; 
+            return createData;
         } catch (error) {
             setError(error.message);
             throw error;
@@ -123,18 +126,18 @@ export const BookProvider = ({ children }) => {
             }
 
             const updatedData = await response.json();
-            setBooks((prevBooks) => 
+            setBooks((prevBooks) =>
                 prevBooks.map(book => (book.id === id ? { ...book, ...updatedBook } : book))
             );
-            return updatedData; 
+            return updatedData;
         } catch (error) {
             setError(error.message);
             throw error;
-        } 
+        }
     };
 
     return (
-        <BookContext.Provider value={{ books, error, fetchBookDetails, removeBook, addBook, editBook }}>
+        <BookContext.Provider value={{ books, error, fetchBooks, fetchBookDetails, removeBook, addBook, editBook }}>
             {children}
         </BookContext.Provider>
     );
